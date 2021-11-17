@@ -11,6 +11,7 @@ namespace AccusiteDataAggregator.Objects
     //Interfaces
     public interface IDirectoryWrapper
     {
+        public DirectoryInfo CreateDirectory(string path);
         public bool Exists(string? path);
         public DirectoryInfo? GetParent(string path);
         public string GetCurrentDirectory();
@@ -20,6 +21,8 @@ namespace AccusiteDataAggregator.Objects
     public interface IFileWrapper
     {
         public void AppendAllLines(string path, IEnumerable<string> contents);
+        public void Copy(string sourceFileName, string destFileName);
+        public void Delete(string path);
         public bool Exists(string? path);
         public string[] ReadAllLines(string path);
         public string ReadAllText(string path);
@@ -31,6 +34,7 @@ namespace AccusiteDataAggregator.Objects
     //Implementations
     public class DirectoryWrapper : IDirectoryWrapper
     {
+        public virtual DirectoryInfo CreateDirectory(string path) => Directory.CreateDirectory(path);
         public virtual bool Exists(string? path) => Directory.Exists(path);
         public virtual DirectoryInfo? GetParent(string path) => Directory.GetParent(path);
         public virtual string GetCurrentDirectory() => Directory.GetCurrentDirectory();
@@ -40,6 +44,8 @@ namespace AccusiteDataAggregator.Objects
     public class FileWrapper : IFileWrapper
     {
         public virtual void AppendAllLines(string path, IEnumerable<string> contents) => File.AppendAllLines(path, contents);
+        public virtual void Copy(string sourceFileName, string destFileName) => File.Copy(sourceFileName, destFileName);
+        public virtual void Delete(string path) => File.Delete(path);
         public virtual bool Exists(string? path) => File.Exists(path);
         public virtual string[] ReadAllLines(string path) => File.ReadAllLines(path);
         public virtual string ReadAllText(string path) => File.ReadAllText(path);

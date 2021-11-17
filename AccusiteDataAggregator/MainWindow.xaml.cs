@@ -1,18 +1,10 @@
 ﻿using AccusiteDataAggregator.Objects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace AccusiteDataAggregator
 {
@@ -21,7 +13,7 @@ namespace AccusiteDataAggregator
     /// </summary>
     public partial class MainWindow : Window
     {
-        public readonly string Version = "1.0.0";
+        public string Version { get; } = "1.0.0";
         internal List<string> FunctionList { get; } = new() { "Get All Exc Data", "Get Exc By Serial Number" };
 
         public MainWindow()
@@ -34,10 +26,10 @@ namespace AccusiteDataAggregator
 
         private void AddFunctions()
         {
-            foreach(string function in FunctionList)
+            foreach (string function in FunctionList)
             {
                 ListViewItem newItem = new() { Content = function };
-                FunctionListView.Items.Add(newItem);
+                _ = FunctionListView.Items.Add(newItem);
             }
             FunctionListView.SelectedItem = FunctionListView.Items.GetItemAt(0);
         }
@@ -80,19 +72,37 @@ namespace AccusiteDataAggregator
 
         private void DetailsButton1_Click(object sender, RoutedEventArgs e)
         {
+            string currentFunction = (string)((ListViewItem)FunctionListView.SelectedItem).Content;
+            try
+            {
+                if (currentFunction == "Get Exc By Serial Number")
+                {
+                    Aggregator.CollectSingleTrackerData(DetailsTextBox1.Text);
+                    string outputPath = Path.Combine(Aggregator.Config.OutputFolderPath, $"SN{DetailsTextBox1.Text}");
+                    if (Directory.Exists(outputPath))
+                    {
+                        _ = Process.Start("explorer.exe", outputPath);
+                    }
+                }
+                else if (currentFunction == "Get All Exc Data")
+                {
+                    int dataCount = Aggregator.CollectAllTrackerData();
+                    _ = MessageBox.Show($"Collected data for {dataCount} trackers.", "Done", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (Directory.Exists(Aggregator.Config.OutputFolderPath))
+                    {
+                        _ = Process.Start("explorer.exe", Aggregator.Config.OutputFolderPath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DisplayError("Tracker Data Gather Error", ex.Message);
+            }
 
         }
-        private void DetailsButton2_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void FileMenuExit_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-        private void FunctionListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateDetails((string)((ListViewItem)e.AddedItems[0]).Content);
-        }
+        private static void DisplayError(string caption, string message) => _ = MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
+        private void DetailsButton2_Click(object sender, RoutedEventArgs e) { }
+        private void FileMenuExit_Click(object sender, RoutedEventArgs e) => Close();
+        private void FunctionListView_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateDetails((string)((ListViewItem)e.AddedItems[0]).Content);
     }
 }

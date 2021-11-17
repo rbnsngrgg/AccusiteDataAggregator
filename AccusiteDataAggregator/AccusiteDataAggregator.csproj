@@ -4,6 +4,12 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Authors>Gregg Robinson</Authors>
+    <Company>Perceptron</Company>
+    <Description>Gather select residual error data for Accusite 2.0 trackers.</Description>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
 </Project>

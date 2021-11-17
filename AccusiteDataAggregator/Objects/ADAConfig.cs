@@ -67,6 +67,7 @@ namespace AccusiteDataAggregator.Objects
         private void LoadConfig()
         {
             XmlDocument config = new();
+            string text = fileWrapper.ReadAllText(FilePath);
             config.LoadXml(string.Join(' ', fileWrapper.ReadAllText(FilePath)));
             XmlNodeList elements = config.GetElementsByTagName("Aggregator");
             if (elements != null)
