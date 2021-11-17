@@ -94,8 +94,6 @@ namespace AccusiteDataAggregator.Objects
                     line.Split('\t')[2],
                     NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign,
                     CultureInfo.InvariantCulture));
-                //try { value = Math.Abs(decimal.Parse(line.Split('\t')[2], CultureInfo.InvariantCulture)); }
-                //catch (FormatException e) { value = Math.Abs(decimal.Parse(line.Split('\t')[2], )); }
                 avgError += value;
                 count++;
             }
