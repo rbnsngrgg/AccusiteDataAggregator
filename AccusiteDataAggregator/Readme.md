@@ -1,0 +1,1 @@
+﻿Requires .Net5 desktop runtime: https://dotnet.microsoft.com/download/dotnet/5.0
